@@ -45,14 +45,19 @@ footer{text-align:center;padding:22px;color:#581c87;font-size:12px}
 <main class="wrap">
 <section class="hero">
 <img id="avatar" class="avatar" alt="Sua foto de perfil" src="https://xatimg.com/image/0US1LgRcubbR.png">
-<div><h1 id="displayName">x יɪɢѳʀ️ ʂyкεʂי️ x</h1><span class="status">● Online no xat</span><p id="headline">“A vida fica melhor quando a gente coleciona boas histórias.”</p><span class="badge">🎮 Games</span><span class="badge">🎸 Música</span><span class="badge">💜 Drica</span><p class="small">Fortaleza, Brasil • Desde os tempos de internet discada ✨</p></div>
+<div><h1 id="displayName">x יɪɢѳ️ʀ️ ʂyкεʂי️ x</h1><span class="status">● Online no xat</span><p id="headline">“A vida fica melhor quando a gente coleciona boas histórias.”</p><span class="badge">🎮 Games</span><span class="badge">🎸 Música</span><span class="badge">💜 Drica</span><p class="small">Fortaleza, Brasil • Desde os tempos de internet discada ✨</p></div>
 </section>
 <div class="layout">
 <aside>
 <section class="card"><h2>🎵 Minha música</h2><div class="pad">
 <div class="music"><div id="disc" class="disc"></div><div><strong id="songTitle">Vermilion Pt. 2</strong><div class="small" id="songArtist">Slipknot</div></div></div>
-<audio id="audio" controls autoplay style="width:100%;margin-top:12px"></audio>
-<label class="small" for="audioFile">Escolher outra música do seu dispositivo</label><input id="audioFile" type="file" accept="audio/*">
+
+<audio id="audio" controls autoplay style="width:100%;margin-top:12px">
+  <source src="https://ia800902.us.archive.org/30/items/SlipknotVermilionPt2/Slipknot%20-%20Vermilion%20Pt%202.mp3" type="audio/mpeg">
+  Seu navegador não suporta o reprodutor de áudio.
+</audio>
+
+<label class="small" for="audioFile" style="margin-top:10px;display:block">Escolher outra música do seu dispositivo</label><input id="audioFile" type="file" accept="audio/*">
 <input id="songName" placeholder="Slipknot - Vermilion Pt 2"><input id="artistName" placeholder="Slipknot"><button id="saveSong">Atualizar título</button>
 </div></section>
 <section class="card"><h2>👤 Sobre mim</h2><div class="pad">
@@ -80,12 +85,6 @@ footer{text-align:center;padding:22px;color:#581c87;font-size:12px}
 </main>
 <script>
 const $ = id => document.getElementById(id);
-
-// Carregamento da música enviada integrada ao código
-const embeddedAudio = "data:audio/mp3;base64,//uQxAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAAYAAAC7ACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgI...[ÁUDIO_EMBUTIDO]";
-
-const audio = $('audio');
-audio.src = embeddedAudio;
 
 function switchTab(id) {
   document.querySelectorAll('.panel').forEach(p => p.classList.toggle('active', p.id === id));
@@ -175,6 +174,8 @@ $('profileFile').onchange = e => {
   if (f) $('avatar').src = URL.createObjectURL(f);
 };
 
+const audio = $('audio');
+
 $('audioFile').onchange = e => {
   const f = e.target.files[0];
   if (f) {
@@ -188,14 +189,19 @@ $('audioFile').onchange = e => {
 audio.onplay = () => $('disc').classList.add('playing');
 audio.onpause = () => $('disc').classList.remove('playing');
 
-// Executa o áudio ao primeiro clique/interação do utilizador na página (exigido pelos navegadores)
+// Toca a música e inicia a rotação do vinil ao primeiro clique/interação
 const startAudio = () => {
   if (audio.paused) {
-    audio.play().catch(() => {});
+    audio.play().then(() => {
+      $('disc').classList.add('playing');
+    }).catch(() => {});
   }
   document.removeEventListener('click', startAudio);
+  document.removeEventListener('touchstart', startAudio);
 };
+
 document.addEventListener('click', startAudio);
+document.addEventListener('touchstart', startAudio);
 
 $('saveSong').onclick = () => {
   if ($('songName').value.trim()) $('songTitle').textContent = $('songName').value.trim();
